@@ -31,6 +31,18 @@ services:
       - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
     networks:
       - app-network
+  nginx:
+    build:
+      context: ./nginx/
+      dockerfile: Dockerfile.nginx
+    container_name: nginx_app
+    restart: always
+    ports:
+      - 8081:80
+    depends_on:
+      - fastapi
+    networks:
+      - app-network
 
 volumes:
   pg_data_api:
