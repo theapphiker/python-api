@@ -1,6 +1,6 @@
 from fastapi import Response, status, HTTPException, APIRouter, Depends
 from typing import List, Optional
-from .. import schemas, database, oauth2
+import schemas, database, oauth2
 
 router = APIRouter(
     prefix="/posts",

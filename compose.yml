@@ -1,0 +1,39 @@
+services:
+  postgres:
+    build:
+      context: ./database/
+      dockerfile: Dockerfile.postgres
+    container_name: postgres_api
+    restart: always
+    volumes:
+      - pg_data_api:/var/lib/postgresql
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - app-network
+  fastapi:
+    build:
+      context: ./app/
+      dockerfile: Dockerfile.fastapi
+    container_name: fastapi_app
+    restart: always
+    ports:
+      - 7999:7999
+    depends_on:
+      - postgres
+    environment:
+      - URI=${URI}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+    networks:
+      - app-network
+
+volumes:
+  pg_data_api:
+networks:
+  app-network:
+    driver: bridge

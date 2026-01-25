@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Response, status, HTTPException, APIRouter
 from psycopg.rows import dict_row
-from .. import schemas, utils, database
+import schemas, utils, database
 
 router = APIRouter(
     prefix="/users",

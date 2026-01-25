@@ -1,5 +1,5 @@
 from fastapi import Response, status, HTTPException, APIRouter, Depends
-from .. import schemas, database, oauth2
+import schemas, database, oauth2
 from psycopg import errors
 
 router = APIRouter(

@@ -10,10 +10,6 @@ published BOOLEAN DEFAULT TRUE NOT NULL,
 created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
-INSERT INTO dev.posts (title, content) VALUES ('first post', 'this is my first post');
-
-INSERT INTO dev.posts (title, content) VALUES ('second post', 'some interesting stuff');
-
 CREATE USER fastapi_user WITH PASSWORD 'secretpassword';
 
 GRANT CONNECT ON DATABASE fastapi TO fastapi_user;
@@ -29,14 +25,11 @@ id SERIAL PRIMARY KEY,
 created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
-fastapi=# BEGIN;
-BEGIN
-fastapi=*# ALTER TABLE dev.posts DROP CONSTRAINT fk_user_id;
-ALTER TABLE
-fastapi=*# ALTER TABLE dev.posts ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES dev.users (id) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE
-fastapi=*# COMMIT;
-COMMIT
+
+BEGIN;
+ALTER TABLE dev.posts ADD COLUMN user_id INT NOT NULL;
+ALTER TABLE dev.posts ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES dev.users (id) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
 
 
 '''
