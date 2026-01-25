@@ -1,5 +1,9 @@
 CREATE DATABASE fastapi;
 
+exit
+
+psql -U admin -d fastapi
+
 CREATE SCHEMA dev;
 
 CREATE TABLE dev.posts
