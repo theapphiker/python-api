@@ -1,0 +1,52 @@
+services:
+  test_postgres:
+    build:
+      context: ./tests/test_database/
+      dockerfile: Dockerfile.test_postgres
+    container_name: test_postgres_api
+    restart: always
+    volumes:
+      - test_pg_data_api:/var/lib/postgresql
+    ports:
+      - 5434:5432
+    # change this
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - test-app-network
+  test_fastapi:
+    build:
+      context: ./tests
+      dockerfile: ./test_app/Dockerfile.test_fastapi
+    container_name: test_fastapi_app
+    restart: always
+    ports:
+      - 7998:7999
+    depends_on:
+      - test_postgres
+    environment:
+      - URI=${TEST_URI}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+    networks:
+      - test-app-network
+  test_nginx:
+    build:
+      context: ./tests/test_nginx
+      dockerfile: Dockerfile.test_nginx
+    container_name: test_nginx_app
+    restart: always
+    ports:
+      - 8082:80
+    depends_on:
+      - test_fastapi
+    networks:
+      - test-app-network
+
+volumes:
+  test_pg_data_api:
+networks:
+  test-app-network:
+    driver: bridge

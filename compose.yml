@@ -16,8 +16,8 @@ services:
       - app-network
   fastapi:
     build:
-      context: ./app/
-      dockerfile: Dockerfile.fastapi
+      context: ./
+      dockerfile: ./app/Dockerfile.fastapi
     container_name: fastapi_app
     restart: always
     ports:

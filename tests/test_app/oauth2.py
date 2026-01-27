@@ -34,11 +34,11 @@ def verify_access_token(token: str, credentials_exception):
     return token_data
 
 # pass as dependency into any path operation
-def get_current_user(token: str = Depends(oauth2_scheme), db = Depends(database.get_db)):
-    cursor, conn = db
+def get_current_user(token: str = Depends(oauth2_scheme), ):
     credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='could not validate credentials',
                                           headers={'WWW-Authenticate':'Bearer'})
     token = verify_access_token(token, credentials_exception)
-    cursor.execute("""SELECT id, email, created_at FROM dev.users WHERE id = %s;""", (token.id,))
-    user = cursor.fetchone()
+    with database.conn.cursor() as cursor:
+        cursor.execute("""SELECT id, email, created_at FROM dev.users WHERE id = %s;""", (token.id,))
+        user = cursor.fetchone()
     return user

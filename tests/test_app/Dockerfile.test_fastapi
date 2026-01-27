@@ -1,0 +1,17 @@
+FROM python:3.13-slim
+
+# Work from a root directory
+WORKDIR /src
+
+# Copy the requirements from the app folder
+COPY ./test_app/requirements.txt ./app/
+RUN pip install --no-cache-dir -r ./app/requirements.txt
+
+# Copy the actual app folder INTO the /src/app directory
+COPY ./test_app/ ./app
+COPY ../py_tests ./tests
+
+EXPOSE 7998
+
+# Start using the module path "app.main:app"
+CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:7998", "app.main:app"]
