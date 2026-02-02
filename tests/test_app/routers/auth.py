@@ -7,10 +7,10 @@ router = APIRouter(tags=['Authentication'])
 
 # need to use form data for this now
 @router.post('/login', response_model=schemas.Token)
-def login(user_credentials: OAuth2PasswordRequestForm = Depends()):
-    with database.conn.cursor() as cursor:
-        cursor.execute("""SELECT * FROM dev.users WHERE email = %s;""", (user_credentials.username,))
-        user = cursor.fetchone()
+def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db = Depends(database.get_db)):
+    cursor, conn = db
+    cursor.execute("""SELECT * FROM dev.users WHERE email = %s;""", (user_credentials.username,))
+    user = cursor.fetchone()
     if not user:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Invalid credentials')
     if not utils.verify(user_credentials.password, user.get('password')):

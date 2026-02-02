@@ -1,9 +1,16 @@
-from fastapi import FastAPI
-from random import randrange
+from fastapi import FastAPI, Depends
+from contextlib import asynccontextmanager
+from app.database import pool, get_db  # Import the pool and the generator
 
 from app.routers import post, user, auth, vote
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    pool.open()
+    yield
+    pool.close()
+
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(post.router)
 app.include_router(user.router)

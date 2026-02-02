@@ -53,3 +53,4 @@ watchfiles==1.1.1
 websockets==15.0.1
 gunicorn
 pytest
+psycopg_pool
